@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Aeropuerto;
 import com.mycompany.myapp.repository.AeropuertoRepository;
+import com.mycompany.myapp.service.criteria.AeropuertoCriteria;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -178,6 +179,219 @@ class AeropuertoResourceIT {
             .andExpect(jsonPath("$.id").value(aeropuerto.getId().intValue()))
             .andExpect(jsonPath("$.nombre").value(DEFAULT_NOMBRE))
             .andExpect(jsonPath("$.ciudad").value(DEFAULT_CIUDAD));
+    }
+
+    @Test
+    @Transactional
+    void getAeropuertosByIdFiltering() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        Long id = aeropuerto.getId();
+
+        defaultAeropuertoShouldBeFound("id.equals=" + id);
+        defaultAeropuertoShouldNotBeFound("id.notEquals=" + id);
+
+        defaultAeropuertoShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultAeropuertoShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultAeropuertoShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultAeropuertoShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByNombreIsEqualToSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where nombre equals to DEFAULT_NOMBRE
+        defaultAeropuertoShouldBeFound("nombre.equals=" + DEFAULT_NOMBRE);
+
+        // Get all the aeropuertoList where nombre equals to UPDATED_NOMBRE
+        defaultAeropuertoShouldNotBeFound("nombre.equals=" + UPDATED_NOMBRE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByNombreIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where nombre not equals to DEFAULT_NOMBRE
+        defaultAeropuertoShouldNotBeFound("nombre.notEquals=" + DEFAULT_NOMBRE);
+
+        // Get all the aeropuertoList where nombre not equals to UPDATED_NOMBRE
+        defaultAeropuertoShouldBeFound("nombre.notEquals=" + UPDATED_NOMBRE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByNombreIsInShouldWork() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where nombre in DEFAULT_NOMBRE or UPDATED_NOMBRE
+        defaultAeropuertoShouldBeFound("nombre.in=" + DEFAULT_NOMBRE + "," + UPDATED_NOMBRE);
+
+        // Get all the aeropuertoList where nombre equals to UPDATED_NOMBRE
+        defaultAeropuertoShouldNotBeFound("nombre.in=" + UPDATED_NOMBRE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByNombreIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where nombre is not null
+        defaultAeropuertoShouldBeFound("nombre.specified=true");
+
+        // Get all the aeropuertoList where nombre is null
+        defaultAeropuertoShouldNotBeFound("nombre.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByNombreContainsSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where nombre contains DEFAULT_NOMBRE
+        defaultAeropuertoShouldBeFound("nombre.contains=" + DEFAULT_NOMBRE);
+
+        // Get all the aeropuertoList where nombre contains UPDATED_NOMBRE
+        defaultAeropuertoShouldNotBeFound("nombre.contains=" + UPDATED_NOMBRE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByNombreNotContainsSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where nombre does not contain DEFAULT_NOMBRE
+        defaultAeropuertoShouldNotBeFound("nombre.doesNotContain=" + DEFAULT_NOMBRE);
+
+        // Get all the aeropuertoList where nombre does not contain UPDATED_NOMBRE
+        defaultAeropuertoShouldBeFound("nombre.doesNotContain=" + UPDATED_NOMBRE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByCiudadIsEqualToSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where ciudad equals to DEFAULT_CIUDAD
+        defaultAeropuertoShouldBeFound("ciudad.equals=" + DEFAULT_CIUDAD);
+
+        // Get all the aeropuertoList where ciudad equals to UPDATED_CIUDAD
+        defaultAeropuertoShouldNotBeFound("ciudad.equals=" + UPDATED_CIUDAD);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByCiudadIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where ciudad not equals to DEFAULT_CIUDAD
+        defaultAeropuertoShouldNotBeFound("ciudad.notEquals=" + DEFAULT_CIUDAD);
+
+        // Get all the aeropuertoList where ciudad not equals to UPDATED_CIUDAD
+        defaultAeropuertoShouldBeFound("ciudad.notEquals=" + UPDATED_CIUDAD);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByCiudadIsInShouldWork() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where ciudad in DEFAULT_CIUDAD or UPDATED_CIUDAD
+        defaultAeropuertoShouldBeFound("ciudad.in=" + DEFAULT_CIUDAD + "," + UPDATED_CIUDAD);
+
+        // Get all the aeropuertoList where ciudad equals to UPDATED_CIUDAD
+        defaultAeropuertoShouldNotBeFound("ciudad.in=" + UPDATED_CIUDAD);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByCiudadIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where ciudad is not null
+        defaultAeropuertoShouldBeFound("ciudad.specified=true");
+
+        // Get all the aeropuertoList where ciudad is null
+        defaultAeropuertoShouldNotBeFound("ciudad.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByCiudadContainsSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where ciudad contains DEFAULT_CIUDAD
+        defaultAeropuertoShouldBeFound("ciudad.contains=" + DEFAULT_CIUDAD);
+
+        // Get all the aeropuertoList where ciudad contains UPDATED_CIUDAD
+        defaultAeropuertoShouldNotBeFound("ciudad.contains=" + UPDATED_CIUDAD);
+    }
+
+    @Test
+    @Transactional
+    void getAllAeropuertosByCiudadNotContainsSomething() throws Exception {
+        // Initialize the database
+        aeropuertoRepository.saveAndFlush(aeropuerto);
+
+        // Get all the aeropuertoList where ciudad does not contain DEFAULT_CIUDAD
+        defaultAeropuertoShouldNotBeFound("ciudad.doesNotContain=" + DEFAULT_CIUDAD);
+
+        // Get all the aeropuertoList where ciudad does not contain UPDATED_CIUDAD
+        defaultAeropuertoShouldBeFound("ciudad.doesNotContain=" + UPDATED_CIUDAD);
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultAeropuertoShouldBeFound(String filter) throws Exception {
+        restAeropuertoMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(aeropuerto.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nombre").value(hasItem(DEFAULT_NOMBRE)))
+            .andExpect(jsonPath("$.[*].ciudad").value(hasItem(DEFAULT_CIUDAD)));
+
+        // Check, that the count call also returns 1
+        restAeropuertoMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultAeropuertoShouldNotBeFound(String filter) throws Exception {
+        restAeropuertoMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restAeropuertoMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

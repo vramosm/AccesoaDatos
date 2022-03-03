@@ -2,6 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Aeropuerto;
 import com.mycompany.myapp.repository.AeropuertoRepository;
+import com.mycompany.myapp.service.AeropuertoQueryService;
+import com.mycompany.myapp.service.AeropuertoService;
+import com.mycompany.myapp.service.criteria.AeropuertoCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,9 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,7 +31,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class AeropuertoResource {
 
     private final Logger log = LoggerFactory.getLogger(AeropuertoResource.class);
@@ -40,10 +40,20 @@ public class AeropuertoResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final AeropuertoService aeropuertoService;
+
     private final AeropuertoRepository aeropuertoRepository;
 
-    public AeropuertoResource(AeropuertoRepository aeropuertoRepository) {
+    private final AeropuertoQueryService aeropuertoQueryService;
+
+    public AeropuertoResource(
+        AeropuertoService aeropuertoService,
+        AeropuertoRepository aeropuertoRepository,
+        AeropuertoQueryService aeropuertoQueryService
+    ) {
+        this.aeropuertoService = aeropuertoService;
         this.aeropuertoRepository = aeropuertoRepository;
+        this.aeropuertoQueryService = aeropuertoQueryService;
     }
 
     /**
@@ -59,7 +69,7 @@ public class AeropuertoResource {
         if (aeropuerto.getId() != null) {
             throw new BadRequestAlertException("A new aeropuerto cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Aeropuerto result = aeropuertoRepository.save(aeropuerto);
+        Aeropuerto result = aeropuertoService.save(aeropuerto);
         return ResponseEntity
             .created(new URI("/api/aeropuertos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -93,7 +103,7 @@ public class AeropuertoResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Aeropuerto result = aeropuertoRepository.save(aeropuerto);
+        Aeropuerto result = aeropuertoService.save(aeropuerto);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, aeropuerto.getId().toString()))
@@ -128,19 +138,7 @@ public class AeropuertoResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Aeropuerto> result = aeropuertoRepository
-            .findById(aeropuerto.getId())
-            .map(existingAeropuerto -> {
-                if (aeropuerto.getNombre() != null) {
-                    existingAeropuerto.setNombre(aeropuerto.getNombre());
-                }
-                if (aeropuerto.getCiudad() != null) {
-                    existingAeropuerto.setCiudad(aeropuerto.getCiudad());
-                }
-
-                return existingAeropuerto;
-            })
-            .map(aeropuertoRepository::save);
+        Optional<Aeropuerto> result = aeropuertoService.partialUpdate(aeropuerto);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -152,14 +150,30 @@ public class AeropuertoResource {
      * {@code GET  /aeropuertos} : get all the aeropuertos.
      *
      * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of aeropuertos in body.
      */
     @GetMapping("/aeropuertos")
-    public ResponseEntity<List<Aeropuerto>> getAllAeropuertos(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
-        log.debug("REST request to get a page of Aeropuertos");
-        Page<Aeropuerto> page = aeropuertoRepository.findAll(pageable);
+    public ResponseEntity<List<Aeropuerto>> getAllAeropuertos(
+        AeropuertoCriteria criteria,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Aeropuertos by criteria: {}", criteria);
+        Page<Aeropuerto> page = aeropuertoQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /aeropuertos/count} : count all the aeropuertos.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/aeropuertos/count")
+    public ResponseEntity<Long> countAeropuertos(AeropuertoCriteria criteria) {
+        log.debug("REST request to count Aeropuertos by criteria: {}", criteria);
+        return ResponseEntity.ok().body(aeropuertoQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -171,7 +185,7 @@ public class AeropuertoResource {
     @GetMapping("/aeropuertos/{id}")
     public ResponseEntity<Aeropuerto> getAeropuerto(@PathVariable Long id) {
         log.debug("REST request to get Aeropuerto : {}", id);
-        Optional<Aeropuerto> aeropuerto = aeropuertoRepository.findById(id);
+        Optional<Aeropuerto> aeropuerto = aeropuertoService.findOne(id);
         return ResponseUtil.wrapOrNotFound(aeropuerto);
     }
 
@@ -184,7 +198,7 @@ public class AeropuertoResource {
     @DeleteMapping("/aeropuertos/{id}")
     public ResponseEntity<Void> deleteAeropuerto(@PathVariable Long id) {
         log.debug("REST request to delete Aeropuerto : {}", id);
-        aeropuertoRepository.deleteById(id);
+        aeropuertoService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

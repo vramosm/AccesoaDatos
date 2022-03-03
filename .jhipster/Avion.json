@@ -27,9 +27,10 @@
       "fieldValidateRulesMin": "0"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Avion",
   "pagination": "pagination",
   "readOnly": false,
   "relationships": [],
-  "service": "no"
+  "service": "serviceImpl"
 }

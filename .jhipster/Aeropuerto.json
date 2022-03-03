@@ -16,9 +16,10 @@
       "fieldValidateRulesMinlength": "10"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Aeropuerto",
   "pagination": "pagination",
   "readOnly": false,
   "relationships": [],
-  "service": "no"
+  "service": "serviceImpl"
 }

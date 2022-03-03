@@ -9,4 +9,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface AvionRepository extends JpaRepository<Avion, Long> {}
+public interface AvionRepository extends JpaRepository<Avion, Long>, JpaSpecificationExecutor<Avion> {}

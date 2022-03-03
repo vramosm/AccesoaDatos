@@ -2,6 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Avion;
 import com.mycompany.myapp.repository.AvionRepository;
+import com.mycompany.myapp.service.AvionQueryService;
+import com.mycompany.myapp.service.AvionService;
+import com.mycompany.myapp.service.criteria.AvionCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,9 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,7 +31,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class AvionResource {
 
     private final Logger log = LoggerFactory.getLogger(AvionResource.class);
@@ -40,10 +40,16 @@ public class AvionResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final AvionService avionService;
+
     private final AvionRepository avionRepository;
 
-    public AvionResource(AvionRepository avionRepository) {
+    private final AvionQueryService avionQueryService;
+
+    public AvionResource(AvionService avionService, AvionRepository avionRepository, AvionQueryService avionQueryService) {
+        this.avionService = avionService;
         this.avionRepository = avionRepository;
+        this.avionQueryService = avionQueryService;
     }
 
     /**
@@ -59,7 +65,7 @@ public class AvionResource {
         if (avion.getId() != null) {
             throw new BadRequestAlertException("A new avion cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Avion result = avionRepository.save(avion);
+        Avion result = avionService.save(avion);
         return ResponseEntity
             .created(new URI("/api/avions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -91,7 +97,7 @@ public class AvionResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Avion result = avionRepository.save(avion);
+        Avion result = avionService.save(avion);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, avion.getId().toString()))
@@ -126,25 +132,7 @@ public class AvionResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Avion> result = avionRepository
-            .findById(avion.getId())
-            .map(existingAvion -> {
-                if (avion.getTipo() != null) {
-                    existingAvion.setTipo(avion.getTipo());
-                }
-                if (avion.getMatricula() != null) {
-                    existingAvion.setMatricula(avion.getMatricula());
-                }
-                if (avion.getNumeroSerie() != null) {
-                    existingAvion.setNumeroSerie(avion.getNumeroSerie());
-                }
-                if (avion.getEdad() != null) {
-                    existingAvion.setEdad(avion.getEdad());
-                }
-
-                return existingAvion;
-            })
-            .map(avionRepository::save);
+        Optional<Avion> result = avionService.partialUpdate(avion);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -156,14 +144,30 @@ public class AvionResource {
      * {@code GET  /avions} : get all the avions.
      *
      * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of avions in body.
      */
     @GetMapping("/avions")
-    public ResponseEntity<List<Avion>> getAllAvions(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
-        log.debug("REST request to get a page of Avions");
-        Page<Avion> page = avionRepository.findAll(pageable);
+    public ResponseEntity<List<Avion>> getAllAvions(
+        AvionCriteria criteria,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Avions by criteria: {}", criteria);
+        Page<Avion> page = avionQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /avions/count} : count all the avions.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/avions/count")
+    public ResponseEntity<Long> countAvions(AvionCriteria criteria) {
+        log.debug("REST request to count Avions by criteria: {}", criteria);
+        return ResponseEntity.ok().body(avionQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -175,7 +179,7 @@ public class AvionResource {
     @GetMapping("/avions/{id}")
     public ResponseEntity<Avion> getAvion(@PathVariable Long id) {
         log.debug("REST request to get Avion : {}", id);
-        Optional<Avion> avion = avionRepository.findById(id);
+        Optional<Avion> avion = avionService.findOne(id);
         return ResponseUtil.wrapOrNotFound(avion);
     }
 
@@ -188,7 +192,7 @@ public class AvionResource {
     @DeleteMapping("/avions/{id}")
     public ResponseEntity<Void> deleteAvion(@PathVariable Long id) {
         log.debug("REST request to delete Avion : {}", id);
-        avionRepository.deleteById(id);
+        avionService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
