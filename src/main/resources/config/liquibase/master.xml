@@ -21,6 +21,7 @@
     <include file="config/liquibase/changelog/20220303210300_added_entity_Tripulante.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20220303210808_added_entity_Vuelo.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20220303210808_added_entity_constraints_Vuelo.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

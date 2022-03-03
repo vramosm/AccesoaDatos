@@ -19,6 +19,44 @@
   "name": "Vuelo",
   "pagination": "pagination",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityField": "nombre",
+      "otherEntityName": "aeropuerto",
+      "relationshipName": "origen",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"]
+    },
+    {
+      "otherEntityField": "nombre",
+      "otherEntityName": "aeropuerto",
+      "relationshipName": "destino",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"]
+    },
+    {
+      "otherEntityField": "tipo",
+      "otherEntityName": "avion",
+      "relationshipName": "avion",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"]
+    },
+    {
+      "otherEntityField": "dni",
+      "otherEntityName": "piloto",
+      "relationshipName": "piloto",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"]
+    },
+    {
+      "otherEntityField": "dni",
+      "otherEntityName": "tripulante",
+      "otherEntityRelationshipName": "vuelo",
+      "ownerSide": true,
+      "relationshipName": "tripulacion",
+      "relationshipType": "many-to-many",
+      "relationshipValidateRules": ["required"]
+    }
+  ],
   "service": "serviceImpl"
 }

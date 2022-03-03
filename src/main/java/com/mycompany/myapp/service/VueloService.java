@@ -34,6 +34,14 @@ public interface VueloService {
     Page<Vuelo> findAll(Pageable pageable);
 
     /**
+     * Get all the vuelos with eager load of many-to-many relationships.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<Vuelo> findAllWithEagerRelationships(Pageable pageable);
+
+    /**
      * Get the "id" vuelo.
      *
      * @param id the id of the entity.

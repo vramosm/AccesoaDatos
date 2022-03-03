@@ -91,6 +91,39 @@ public class VueloQueryService extends QueryService<Vuelo> {
             if (criteria.getNumeroDeVuelo() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getNumeroDeVuelo(), Vuelo_.numeroDeVuelo));
             }
+            if (criteria.getOrigenId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getOrigenId(), root -> root.join(Vuelo_.origen, JoinType.LEFT).get(Aeropuerto_.id))
+                    );
+            }
+            if (criteria.getDestinoId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getDestinoId(), root -> root.join(Vuelo_.destino, JoinType.LEFT).get(Aeropuerto_.id))
+                    );
+            }
+            if (criteria.getAvionId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getAvionId(), root -> root.join(Vuelo_.avion, JoinType.LEFT).get(Avion_.id))
+                    );
+            }
+            if (criteria.getPilotoId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getPilotoId(), root -> root.join(Vuelo_.piloto, JoinType.LEFT).get(Piloto_.id))
+                    );
+            }
+            if (criteria.getTripulacionId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getTripulacionId(),
+                            root -> root.join(Vuelo_.tripulacions, JoinType.LEFT).get(Tripulante_.id)
+                        )
+                    );
+            }
         }
         return specification;
     }

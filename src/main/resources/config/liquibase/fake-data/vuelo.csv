@@ -1,11 +1,11 @@
-id;pasaporte_covid;numero_de_vuelo
-1;true;KinaXXXXXX
-2;false;Cabo Parcela
-3;true;SCSIXXXXXX
-4;true;transmitter Lado
-5;true;Toallas Adelante Rampa
-6;false;AI Marroquinería
-7;true;disintermediate pixel Madagascar
-8;false;Inteligente SMTP Optimización
-9;true;Cataluña Hormigon
-10;false;intuitive Directo
+id;pasaporte_covid;numero_de_vuelo;origen_id;destino_id;avion_id;piloto_id
+1;true;KinaXXXXXX;1;1;1;1
+2;false;Cabo Parcela;2;2;2;2
+3;true;SCSIXXXXXX;3;3;3;3
+4;true;transmitter Lado;4;4;4;4
+5;true;Toallas Adelante Rampa;5;5;5;5
+6;false;AI Marroquinería;6;6;6;6
+7;true;disintermediate pixel Madagascar;7;7;7;7
+8;false;Inteligente SMTP Optimización;8;8;8;8
+9;true;Cataluña Hormigon;9;9;9;9
+10;false;intuitive Directo;10;10;10;10

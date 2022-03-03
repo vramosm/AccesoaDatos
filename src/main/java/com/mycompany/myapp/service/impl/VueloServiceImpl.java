@@ -58,11 +58,15 @@ public class VueloServiceImpl implements VueloService {
         return vueloRepository.findAll(pageable);
     }
 
+    public Page<Vuelo> findAllWithEagerRelationships(Pageable pageable) {
+        return vueloRepository.findAllWithEagerRelationships(pageable);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Vuelo> findOne(Long id) {
         log.debug("Request to get Vuelo : {}", id);
-        return vueloRepository.findById(id);
+        return vueloRepository.findOneWithEagerRelationships(id);
     }
 
     @Override

@@ -53,6 +53,7 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.myapp.domain.Piloto.class.getName());
             createCache(cm, com.mycompany.myapp.domain.Tripulante.class.getName());
             createCache(cm, com.mycompany.myapp.domain.Vuelo.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.Vuelo.class.getName() + ".tripulacions");
             // jhipster-needle-ehcache-add-entry
         };
     }
