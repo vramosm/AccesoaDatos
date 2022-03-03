@@ -100,6 +100,12 @@ public class TripulanteQueryService extends QueryService<Tripulante> {
             if (criteria.getEmail() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getEmail(), Tripulante_.email));
             }
+            if (criteria.getVueloId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getVueloId(), root -> root.join(Tripulante_.vuelos, JoinType.LEFT).get(Vuelo_.id))
+                    );
+            }
         }
         return specification;
     }

@@ -1,5 +1,6 @@
 package com.mycompany.myapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +57,7 @@ public class Vuelo implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "tripulacion_id")
     )
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "vuelos" }, allowSetters = true)
     private Set<Tripulante> tripulacions = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -166,11 +168,13 @@ public class Vuelo implements Serializable {
 
     public Vuelo addTripulacion(Tripulante tripulante) {
         this.tripulacions.add(tripulante);
+        tripulante.getVuelos().add(this);
         return this;
     }
 
     public Vuelo removeTripulacion(Tripulante tripulante) {
         this.tripulacions.remove(tripulante);
+        tripulante.getVuelos().remove(this);
         return this;
     }
 

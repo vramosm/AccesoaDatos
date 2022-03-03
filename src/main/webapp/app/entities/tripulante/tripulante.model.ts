@@ -1,3 +1,5 @@
+import { IVuelo } from 'app/entities/vuelo/vuelo.model';
+
 export interface ITripulante {
   id?: number;
   nombre?: string;
@@ -7,6 +9,7 @@ export interface ITripulante {
   email?: string;
   fotoContentType?: string;
   foto?: string;
+  vuelos?: IVuelo[] | null;
 }
 
 export class Tripulante implements ITripulante {
@@ -18,7 +21,8 @@ export class Tripulante implements ITripulante {
     public direccion?: string,
     public email?: string,
     public fotoContentType?: string,
-    public foto?: string
+    public foto?: string,
+    public vuelos?: IVuelo[] | null
   ) {}
 }
 

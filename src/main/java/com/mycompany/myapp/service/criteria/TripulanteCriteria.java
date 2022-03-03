@@ -38,6 +38,8 @@ public class TripulanteCriteria implements Serializable, Criteria {
 
     private StringFilter email;
 
+    private LongFilter vueloId;
+
     private Boolean distinct;
 
     public TripulanteCriteria() {}
@@ -49,6 +51,7 @@ public class TripulanteCriteria implements Serializable, Criteria {
         this.dni = other.dni == null ? null : other.dni.copy();
         this.direccion = other.direccion == null ? null : other.direccion.copy();
         this.email = other.email == null ? null : other.email.copy();
+        this.vueloId = other.vueloId == null ? null : other.vueloId.copy();
         this.distinct = other.distinct;
     }
 
@@ -147,6 +150,21 @@ public class TripulanteCriteria implements Serializable, Criteria {
         this.email = email;
     }
 
+    public LongFilter getVueloId() {
+        return vueloId;
+    }
+
+    public LongFilter vueloId() {
+        if (vueloId == null) {
+            vueloId = new LongFilter();
+        }
+        return vueloId;
+    }
+
+    public void setVueloId(LongFilter vueloId) {
+        this.vueloId = vueloId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -171,13 +189,14 @@ public class TripulanteCriteria implements Serializable, Criteria {
             Objects.equals(dni, that.dni) &&
             Objects.equals(direccion, that.direccion) &&
             Objects.equals(email, that.email) &&
+            Objects.equals(vueloId, that.vueloId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nombre, apellidos, dni, direccion, email, distinct);
+        return Objects.hash(id, nombre, apellidos, dni, direccion, email, vueloId, distinct);
     }
 
     // prettier-ignore
@@ -190,6 +209,7 @@ public class TripulanteCriteria implements Serializable, Criteria {
             (dni != null ? "dni=" + dni + ", " : "") +
             (direccion != null ? "direccion=" + direccion + ", " : "") +
             (email != null ? "email=" + email + ", " : "") +
+            (vueloId != null ? "vueloId=" + vueloId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

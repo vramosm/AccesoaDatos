@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Tripulante;
+import com.mycompany.myapp.domain.Vuelo;
 import com.mycompany.myapp.repository.TripulanteRepository;
 import com.mycompany.myapp.service.criteria.TripulanteCriteria;
 import java.util.List;
@@ -682,6 +683,32 @@ class TripulanteResourceIT {
 
         // Get all the tripulanteList where email does not contain UPDATED_EMAIL
         defaultTripulanteShouldBeFound("email.doesNotContain=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    void getAllTripulantesByVueloIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tripulanteRepository.saveAndFlush(tripulante);
+        Vuelo vuelo;
+        if (TestUtil.findAll(em, Vuelo.class).isEmpty()) {
+            vuelo = VueloResourceIT.createEntity(em);
+            em.persist(vuelo);
+            em.flush();
+        } else {
+            vuelo = TestUtil.findAll(em, Vuelo.class).get(0);
+        }
+        em.persist(vuelo);
+        em.flush();
+        tripulante.addVuelo(vuelo);
+        tripulanteRepository.saveAndFlush(tripulante);
+        Long vueloId = vuelo.getId();
+
+        // Get all the tripulanteList where vuelo equals to vueloId
+        defaultTripulanteShouldBeFound("vueloId.equals=" + vueloId);
+
+        // Get all the tripulanteList where vuelo equals to (vueloId + 1)
+        defaultTripulanteShouldNotBeFound("vueloId.equals=" + (vueloId + 1));
     }
 
     /**

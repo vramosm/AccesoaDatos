@@ -46,6 +46,14 @@
   "name": "Tripulante",
   "pagination": "pagination",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "vuelo",
+      "otherEntityRelationshipName": "tripulacion",
+      "ownerSide": false,
+      "relationshipName": "vuelo",
+      "relationshipType": "many-to-many"
+    }
+  ],
   "service": "serviceImpl"
 }
