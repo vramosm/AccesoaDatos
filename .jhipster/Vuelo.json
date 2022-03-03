@@ -1,0 +1,24 @@
+{
+  "changelogDate": "20220303210808",
+  "dto": "no",
+  "fields": [
+    {
+      "fieldName": "pasaporteCovid",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "numeroDeVuelo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "255",
+      "fieldValidateRulesMinlength": "10"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Vuelo",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceImpl"
+}
