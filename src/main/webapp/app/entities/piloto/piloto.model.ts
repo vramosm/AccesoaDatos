@@ -1,3 +1,5 @@
+import { IVuelo } from 'app/entities/vuelo/vuelo.model';
+
 export interface IPiloto {
   id?: number;
   nombre?: string;
@@ -8,6 +10,7 @@ export interface IPiloto {
   horasDeVuelo?: number | null;
   fotoContentType?: string;
   foto?: string;
+  vuelos?: IVuelo[] | null;
 }
 
 export class Piloto implements IPiloto {
@@ -20,7 +23,8 @@ export class Piloto implements IPiloto {
     public email?: string,
     public horasDeVuelo?: number | null,
     public fotoContentType?: string,
-    public foto?: string
+    public foto?: string,
+    public vuelos?: IVuelo[] | null
   ) {}
 }
 

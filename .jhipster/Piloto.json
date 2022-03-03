@@ -52,6 +52,13 @@
   "name": "Piloto",
   "pagination": "pagination",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "vuelo",
+      "otherEntityRelationshipName": "piloto",
+      "relationshipName": "vuelo",
+      "relationshipType": "one-to-many"
+    }
+  ],
   "service": "serviceImpl"
 }

@@ -1,9 +1,12 @@
+import { IVuelo } from 'app/entities/vuelo/vuelo.model';
+
 export interface IAvion {
   id?: number;
   tipo?: string;
   matricula?: string;
   numeroSerie?: string;
   edad?: number | null;
+  vuelos?: IVuelo[] | null;
 }
 
 export class Avion implements IAvion {
@@ -12,7 +15,8 @@ export class Avion implements IAvion {
     public tipo?: string,
     public matricula?: string,
     public numeroSerie?: string,
-    public edad?: number | null
+    public edad?: number | null,
+    public vuelos?: IVuelo[] | null
   ) {}
 }
 

@@ -35,18 +35,22 @@ public class Vuelo implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties(value = { "origens", "destinos" }, allowSetters = true)
     private Aeropuerto origen;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties(value = { "origens", "destinos" }, allowSetters = true)
     private Aeropuerto destino;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties(value = { "vuelos" }, allowSetters = true)
     private Avion avion;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties(value = { "vuelos" }, allowSetters = true)
     private Piloto piloto;
 
     @ManyToMany

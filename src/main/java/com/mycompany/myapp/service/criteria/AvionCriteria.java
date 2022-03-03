@@ -36,6 +36,8 @@ public class AvionCriteria implements Serializable, Criteria {
 
     private IntegerFilter edad;
 
+    private LongFilter vueloId;
+
     private Boolean distinct;
 
     public AvionCriteria() {}
@@ -46,6 +48,7 @@ public class AvionCriteria implements Serializable, Criteria {
         this.matricula = other.matricula == null ? null : other.matricula.copy();
         this.numeroSerie = other.numeroSerie == null ? null : other.numeroSerie.copy();
         this.edad = other.edad == null ? null : other.edad.copy();
+        this.vueloId = other.vueloId == null ? null : other.vueloId.copy();
         this.distinct = other.distinct;
     }
 
@@ -129,6 +132,21 @@ public class AvionCriteria implements Serializable, Criteria {
         this.edad = edad;
     }
 
+    public LongFilter getVueloId() {
+        return vueloId;
+    }
+
+    public LongFilter vueloId() {
+        if (vueloId == null) {
+            vueloId = new LongFilter();
+        }
+        return vueloId;
+    }
+
+    public void setVueloId(LongFilter vueloId) {
+        this.vueloId = vueloId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -152,13 +170,14 @@ public class AvionCriteria implements Serializable, Criteria {
             Objects.equals(matricula, that.matricula) &&
             Objects.equals(numeroSerie, that.numeroSerie) &&
             Objects.equals(edad, that.edad) &&
+            Objects.equals(vueloId, that.vueloId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tipo, matricula, numeroSerie, edad, distinct);
+        return Objects.hash(id, tipo, matricula, numeroSerie, edad, vueloId, distinct);
     }
 
     // prettier-ignore
@@ -170,6 +189,7 @@ public class AvionCriteria implements Serializable, Criteria {
             (matricula != null ? "matricula=" + matricula + ", " : "") +
             (numeroSerie != null ? "numeroSerie=" + numeroSerie + ", " : "") +
             (edad != null ? "edad=" + edad + ", " : "") +
+            (vueloId != null ? "vueloId=" + vueloId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

@@ -31,6 +31,13 @@
   "name": "Avion",
   "pagination": "pagination",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "vuelo",
+      "otherEntityRelationshipName": "avion",
+      "relationshipName": "vuelo",
+      "relationshipType": "one-to-many"
+    }
+  ],
   "service": "serviceImpl"
 }

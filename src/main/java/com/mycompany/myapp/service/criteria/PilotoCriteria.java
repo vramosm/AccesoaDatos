@@ -40,6 +40,8 @@ public class PilotoCriteria implements Serializable, Criteria {
 
     private IntegerFilter horasDeVuelo;
 
+    private LongFilter vueloId;
+
     private Boolean distinct;
 
     public PilotoCriteria() {}
@@ -52,6 +54,7 @@ public class PilotoCriteria implements Serializable, Criteria {
         this.direccion = other.direccion == null ? null : other.direccion.copy();
         this.email = other.email == null ? null : other.email.copy();
         this.horasDeVuelo = other.horasDeVuelo == null ? null : other.horasDeVuelo.copy();
+        this.vueloId = other.vueloId == null ? null : other.vueloId.copy();
         this.distinct = other.distinct;
     }
 
@@ -165,6 +168,21 @@ public class PilotoCriteria implements Serializable, Criteria {
         this.horasDeVuelo = horasDeVuelo;
     }
 
+    public LongFilter getVueloId() {
+        return vueloId;
+    }
+
+    public LongFilter vueloId() {
+        if (vueloId == null) {
+            vueloId = new LongFilter();
+        }
+        return vueloId;
+    }
+
+    public void setVueloId(LongFilter vueloId) {
+        this.vueloId = vueloId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -190,13 +208,14 @@ public class PilotoCriteria implements Serializable, Criteria {
             Objects.equals(direccion, that.direccion) &&
             Objects.equals(email, that.email) &&
             Objects.equals(horasDeVuelo, that.horasDeVuelo) &&
+            Objects.equals(vueloId, that.vueloId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nombre, apellido, dni, direccion, email, horasDeVuelo, distinct);
+        return Objects.hash(id, nombre, apellido, dni, direccion, email, horasDeVuelo, vueloId, distinct);
     }
 
     // prettier-ignore
@@ -210,6 +229,7 @@ public class PilotoCriteria implements Serializable, Criteria {
             (direccion != null ? "direccion=" + direccion + ", " : "") +
             (email != null ? "email=" + email + ", " : "") +
             (horasDeVuelo != null ? "horasDeVuelo=" + horasDeVuelo + ", " : "") +
+            (vueloId != null ? "vueloId=" + vueloId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

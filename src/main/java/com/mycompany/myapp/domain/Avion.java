@@ -1,6 +1,9 @@
 package com.mycompany.myapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -39,6 +42,11 @@ public class Avion implements Serializable {
     @Min(value = 0)
     @Column(name = "edad")
     private Integer edad;
+
+    @OneToMany(mappedBy = "avion")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "origen", "destino", "avion", "piloto", "tripulacions" }, allowSetters = true)
+    private Set<Vuelo> vuelos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -105,6 +113,37 @@ public class Avion implements Serializable {
 
     public void setEdad(Integer edad) {
         this.edad = edad;
+    }
+
+    public Set<Vuelo> getVuelos() {
+        return this.vuelos;
+    }
+
+    public void setVuelos(Set<Vuelo> vuelos) {
+        if (this.vuelos != null) {
+            this.vuelos.forEach(i -> i.setAvion(null));
+        }
+        if (vuelos != null) {
+            vuelos.forEach(i -> i.setAvion(this));
+        }
+        this.vuelos = vuelos;
+    }
+
+    public Avion vuelos(Set<Vuelo> vuelos) {
+        this.setVuelos(vuelos);
+        return this;
+    }
+
+    public Avion addVuelo(Vuelo vuelo) {
+        this.vuelos.add(vuelo);
+        vuelo.setAvion(this);
+        return this;
+    }
+
+    public Avion removeVuelo(Vuelo vuelo) {
+        this.vuelos.remove(vuelo);
+        vuelo.setAvion(null);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

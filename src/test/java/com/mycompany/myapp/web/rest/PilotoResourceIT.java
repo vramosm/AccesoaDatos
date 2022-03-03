@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Piloto;
+import com.mycompany.myapp.domain.Vuelo;
 import com.mycompany.myapp.repository.PilotoRepository;
 import com.mycompany.myapp.service.criteria.PilotoCriteria;
 import java.util.List;
@@ -795,6 +796,32 @@ class PilotoResourceIT {
 
         // Get all the pilotoList where horasDeVuelo is greater than SMALLER_HORAS_DE_VUELO
         defaultPilotoShouldBeFound("horasDeVuelo.greaterThan=" + SMALLER_HORAS_DE_VUELO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPilotosByVueloIsEqualToSomething() throws Exception {
+        // Initialize the database
+        pilotoRepository.saveAndFlush(piloto);
+        Vuelo vuelo;
+        if (TestUtil.findAll(em, Vuelo.class).isEmpty()) {
+            vuelo = VueloResourceIT.createEntity(em);
+            em.persist(vuelo);
+            em.flush();
+        } else {
+            vuelo = TestUtil.findAll(em, Vuelo.class).get(0);
+        }
+        em.persist(vuelo);
+        em.flush();
+        piloto.addVuelo(vuelo);
+        pilotoRepository.saveAndFlush(piloto);
+        Long vueloId = vuelo.getId();
+
+        // Get all the pilotoList where vuelo equals to vueloId
+        defaultPilotoShouldBeFound("vueloId.equals=" + vueloId);
+
+        // Get all the pilotoList where vuelo equals to (vueloId + 1)
+        defaultPilotoShouldNotBeFound("vueloId.equals=" + (vueloId + 1));
     }
 
     /**

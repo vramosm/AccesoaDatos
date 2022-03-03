@@ -32,6 +32,10 @@ public class AeropuertoCriteria implements Serializable, Criteria {
 
     private StringFilter ciudad;
 
+    private LongFilter origenId;
+
+    private LongFilter destinoId;
+
     private Boolean distinct;
 
     public AeropuertoCriteria() {}
@@ -40,6 +44,8 @@ public class AeropuertoCriteria implements Serializable, Criteria {
         this.id = other.id == null ? null : other.id.copy();
         this.nombre = other.nombre == null ? null : other.nombre.copy();
         this.ciudad = other.ciudad == null ? null : other.ciudad.copy();
+        this.origenId = other.origenId == null ? null : other.origenId.copy();
+        this.destinoId = other.destinoId == null ? null : other.destinoId.copy();
         this.distinct = other.distinct;
     }
 
@@ -93,6 +99,36 @@ public class AeropuertoCriteria implements Serializable, Criteria {
         this.ciudad = ciudad;
     }
 
+    public LongFilter getOrigenId() {
+        return origenId;
+    }
+
+    public LongFilter origenId() {
+        if (origenId == null) {
+            origenId = new LongFilter();
+        }
+        return origenId;
+    }
+
+    public void setOrigenId(LongFilter origenId) {
+        this.origenId = origenId;
+    }
+
+    public LongFilter getDestinoId() {
+        return destinoId;
+    }
+
+    public LongFilter destinoId() {
+        if (destinoId == null) {
+            destinoId = new LongFilter();
+        }
+        return destinoId;
+    }
+
+    public void setDestinoId(LongFilter destinoId) {
+        this.destinoId = destinoId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -114,13 +150,15 @@ public class AeropuertoCriteria implements Serializable, Criteria {
             Objects.equals(id, that.id) &&
             Objects.equals(nombre, that.nombre) &&
             Objects.equals(ciudad, that.ciudad) &&
+            Objects.equals(origenId, that.origenId) &&
+            Objects.equals(destinoId, that.destinoId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nombre, ciudad, distinct);
+        return Objects.hash(id, nombre, ciudad, origenId, destinoId, distinct);
     }
 
     // prettier-ignore
@@ -130,6 +168,8 @@ public class AeropuertoCriteria implements Serializable, Criteria {
             (id != null ? "id=" + id + ", " : "") +
             (nombre != null ? "nombre=" + nombre + ", " : "") +
             (ciudad != null ? "ciudad=" + ciudad + ", " : "") +
+            (origenId != null ? "origenId=" + origenId + ", " : "") +
+            (destinoId != null ? "destinoId=" + destinoId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

@@ -103,6 +103,12 @@ public class PilotoQueryService extends QueryService<Piloto> {
             if (criteria.getHorasDeVuelo() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getHorasDeVuelo(), Piloto_.horasDeVuelo));
             }
+            if (criteria.getVueloId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getVueloId(), root -> root.join(Piloto_.vuelos, JoinType.LEFT).get(Vuelo_.id))
+                    );
+            }
         }
         return specification;
     }

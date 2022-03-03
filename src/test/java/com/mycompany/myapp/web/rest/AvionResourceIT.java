@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Avion;
+import com.mycompany.myapp.domain.Vuelo;
 import com.mycompany.myapp.repository.AvionRepository;
 import com.mycompany.myapp.service.criteria.AvionCriteria;
 import java.util.List;
@@ -565,6 +566,32 @@ class AvionResourceIT {
 
         // Get all the avionList where edad is greater than SMALLER_EDAD
         defaultAvionShouldBeFound("edad.greaterThan=" + SMALLER_EDAD);
+    }
+
+    @Test
+    @Transactional
+    void getAllAvionsByVueloIsEqualToSomething() throws Exception {
+        // Initialize the database
+        avionRepository.saveAndFlush(avion);
+        Vuelo vuelo;
+        if (TestUtil.findAll(em, Vuelo.class).isEmpty()) {
+            vuelo = VueloResourceIT.createEntity(em);
+            em.persist(vuelo);
+            em.flush();
+        } else {
+            vuelo = TestUtil.findAll(em, Vuelo.class).get(0);
+        }
+        em.persist(vuelo);
+        em.flush();
+        avion.addVuelo(vuelo);
+        avionRepository.saveAndFlush(avion);
+        Long vueloId = vuelo.getId();
+
+        // Get all the avionList where vuelo equals to vueloId
+        defaultAvionShouldBeFound("vueloId.equals=" + vueloId);
+
+        // Get all the avionList where vuelo equals to (vueloId + 1)
+        defaultAvionShouldNotBeFound("vueloId.equals=" + (vueloId + 1));
     }
 
     /**
