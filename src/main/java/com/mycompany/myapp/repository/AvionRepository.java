@@ -1,6 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Avion;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface AvionRepository extends JpaRepository<Avion, Long>, JpaSpecificationExecutor<Avion> {}
+public interface AvionRepository extends JpaRepository<Avion, Long>, JpaSpecificationExecutor<Avion> {
+    //Métrica 1 - Query JPA para obtener el avión más viejo.
+    Optional<Avion> findFirstByOrderByEdadDesc();
+}

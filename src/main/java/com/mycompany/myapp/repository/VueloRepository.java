@@ -41,4 +41,10 @@ public interface VueloRepository extends VueloRepositoryWithBagRelationships, Jp
         "select vuelo from Vuelo vuelo left join fetch vuelo.origen left join fetch vuelo.destino left join fetch vuelo.avion left join fetch vuelo.piloto where vuelo.id =:id"
     )
     Optional<Vuelo> findOneWithToOneRelationships(@Param("id") Long id);
+
+    //  Métrica 2 - Query JPA para conocer los vuelos en los que ha participado un Piloto.
+    Page<Vuelo> findByPiloto_Dni(String dni, Pageable pageable);
+
+    //  Métrica 3 - Query JPA para conocer el número total de vuelos de un tripulante
+    long countByTripulacions_Dni(String dni);
 }
